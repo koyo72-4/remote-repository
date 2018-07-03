@@ -5,7 +5,7 @@
 </style>
 </head>
 <body>
-  <a href="/?name=red-onion">Red Onion</a>
+  <!-- <a href="/?name=red-onion">Red Onion</a> -->
 <script>
 // fetch('red-onion.json')
 //   .then(function(response) {
@@ -15,13 +15,51 @@
 let params = new URLSearchParams(document.location.search.slice(1));
 let name = params.get("name");
 
-fetch('red-onion.json')
+let mapUrl = "https://nominatim.openstreetmap.org/search/";
+let cityAndState = ",Burlington,VT";
+// ?q=182%20Main%20St.,Burlington,VT&format=json";
+
+fetch(name + '.json')
+.then(function(response) {
+  return response.json();
+})
+.then(function(restaurantInfo) {
+  console.log(restaurantInfo);
+  
+  let restaurantName = document.createElement('p');
+  restaurantName.textContent = restaurantInfo.name;
+  document.body.appendChild(restaurantName);
+  
+  let restaurantAddress = document.createElement('p');
+  restaurantAddress.textContent = "Address: " + restaurantInfo.address;
+  document.body.appendChild(restaurantAddress);
+  
+  let restaurantPhoneNumber = document.createElement('p');
+  restaurantPhoneNumber.textContent = "Phone Number: " + restaurantInfo["phone number"];
+  document.body.appendChild(restaurantPhoneNumber);
+
+  let restaurantHours = document.createElement('p');
+  restaurantHours.textContent = "Hours: " + restaurantInfo.hours;
+  document.body.appendChild(restaurantHours);
+
+  let restaurantComments = document.createElement('p');
+  restaurantComments.textContent = "Notes:";
+  document.body.appendChild(restaurantComments);
+  for (let i = 0; i < restaurantInfo.notes.length; i++) {
+    let para = document.createElement('p');
+    para.textContent = restaurantInfo.notes[i];
+    document.body.appendChild(para);
+  }
+});
+
+  function mapThing(){
+    fetch(mapUrl + restaurantInfo.address + cityAndState + "&format=json")
   .then(function(response) {
     return response.json();
   })
-  .then(function(myText) {
-    console.log(myText);
-  });
-
+  .then(function(restaurantMapInfo) {
+    console.log(restaurantMapInfo);
+  })
+}
 </script>
 </body>
