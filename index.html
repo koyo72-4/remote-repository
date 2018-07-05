@@ -6,6 +6,11 @@
 </head>
 <body>
   <!-- <a href="/?name=red-onion">Red Onion</a> -->
+  <iframe id="theMap"
+  title="Inline Frame Example"
+  width="300"
+  height="200">
+</iframe>
 <script>
 // fetch('red-onion.json')
 //   .then(function(response) {
@@ -19,6 +24,7 @@ let mapUrl = "https://nominatim.openstreetmap.org/search/";
 let cityAndState = ",Burlington,VT";
 // ?q=182%20Main%20St.,Burlington,VT&format=json";
 
+if (params.has("name")){
 fetch(name + '.json')
 .then(function(response) {
   return response.json();
@@ -50,16 +56,60 @@ fetch(name + '.json')
     para.textContent = restaurantInfo.notes[i];
     document.body.appendChild(para);
   }
-});
 
-  function mapThing(){
-    fetch(mapUrl + restaurantInfo.address + cityAndState + "&format=json")
-  .then(function(response) {
-    return response.json();
-  })
-  .then(function(restaurantMapInfo) {
-    console.log(restaurantMapInfo);
-  })
+  return restaurantInfo;
+})
+
+.then(function(restaurantInfo) {
+  let spaceRegex = /\s/g;
+  let urlApi = "https://nominatim.openstreetmap.org/search/?q=";
+  let urlAddress = restaurantInfo.address.replace(spaceRegex, "%20");
+
+fetch(urlApi + urlAddress + "Burlington,VT" + "&format=json")
+.then(function(response) {
+  return response.json();
+
+})
+.then(function(restaurantMap){
+  // console.log(restaurantMap);
+  console.log(restaurantMap[0].boundingbox)
+  let iframe = document.getElementById("theMap")
+  let left = restaurantMap[0].boundingbox[0]
+  let bottom = restaurantMap[0].boundingbox[1]
+  let right = restaurantMap[0].boundingbox[2]
+  let top = restaurantMap[0].boundingbox[3]
+  iframe.setAttribute("src","https://www.openstreetmap.org/export/embed.html?bbox=" + right + "," + bottom + "," + top + "," + left + "&layer=mapnik")
+});
+});
 }
+else{
+  let redP = document.createElement('p');
+  let redOnion = document.createElement('a');
+  redOnion.textContent = "Red Onion";
+  redOnion.setAttribute("href","/?name=red-onion")
+  redP.appendChild(redOnion);
+  document.body.appendChild(redP);
+
+  let mikeP = document.createElement('p');
+  let mrMikes = document.createElement('a');
+  mrMikes.textContent = "Mr. Mike's";
+  mrMikes.setAttribute("href","/?name=mr-mikes")
+  mikeP.appendChild(mrMikes);
+  document.body.appendChild(mikeP);
+
+}
+
+// src="https://www.openstreetmap.org/export/embed.html?bbox=-73.2130900,44.4749000,-73.2102500,44.4772200&layer=mapnik">
+
+
+//   function mapThing(){
+//     fetch(mapUrl + restaurantInfo.address + cityAndState + "&format=json")
+//   .then(function(response) {
+//     return response.json();
+//   })
+//   .then(function(restaurantMapInfo) {
+//     console.log(restaurantMapInfo);
+//   })
+// }
 </script>
 </body>
