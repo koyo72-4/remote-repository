@@ -5,24 +5,19 @@
 </style>
 </head>
 <body>
-  <!-- <a href="/?name=red-onion">Red Onion</a> -->
+ 
   <iframe id="theMap"
   title="Inline Frame Example"
   width="300"
   height="200">
 </iframe>
 <script>
-// fetch('red-onion.json')
-//   .then(function(response) {
-//     response.text().then((s) => console.log(s));
-//   });
 
 let params = new URLSearchParams(document.location.search.slice(1));
 let name = params.get("name");
 
 let mapUrl = "https://nominatim.openstreetmap.org/search/";
 let cityAndState = ",Burlington,VT";
-// ?q=182%20Main%20St.,Burlington,VT&format=json";
 
 if (params.has("name")){
 fetch(name + '.json')
@@ -64,6 +59,8 @@ fetch(name + '.json')
   let spaceRegex = /\s/g;
   let urlApi = "https://nominatim.openstreetmap.org/search/?q=";
   let urlAddress = restaurantInfo.address.replace(spaceRegex, "%20");
+  let iframe = document.getElementById("theMap")
+
 
 fetch(urlApi + urlAddress + "Burlington,VT" + "&format=json")
 .then(function(response) {
@@ -79,6 +76,7 @@ fetch(urlApi + urlAddress + "Burlington,VT" + "&format=json")
   let right = restaurantMap[0].boundingbox[2]
   let top = restaurantMap[0].boundingbox[3]
   iframe.setAttribute("src","https://www.openstreetmap.org/export/embed.html?bbox=" + right + "," + bottom + "," + top + "," + left + "&layer=mapnik")
+
 });
 });
 }
@@ -99,17 +97,5 @@ else{
 
 }
 
-// src="https://www.openstreetmap.org/export/embed.html?bbox=-73.2130900,44.4749000,-73.2102500,44.4772200&layer=mapnik">
-
-
-//   function mapThing(){
-//     fetch(mapUrl + restaurantInfo.address + cityAndState + "&format=json")
-//   .then(function(response) {
-//     return response.json();
-//   })
-//   .then(function(restaurantMapInfo) {
-//     console.log(restaurantMapInfo);
-//   })
-// }
 </script>
 </body>
