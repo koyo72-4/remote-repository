@@ -1,23 +1,44 @@
 <!DOCTYPE html>
+<html>
 <head>
-<style>
-
-</style>
+  <style>
+    #theMap {
+      float: left;
+    }
+    #div {
+      float: left;
+      margin-left: 20px;
+      width: 40%;
+    }
+  </style>
 </head>
 <body>
  
   <iframe id="theMap"
   title="Inline Frame Example"
-  width="300"
-  height="200">
+  width="50%"
+  height="400">
 </iframe>
+<div id="div">
+  <h1>Burlington Restaurants</h1>
+</div>
+<!-- <div id="mapdiv"></div> -->
+<!-- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
+   integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+   crossorigin=""/>
+   <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
+   integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
+   crossorigin=""></script> -->
+<script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
-
 let params = new URLSearchParams(document.location.search.slice(1));
 let name = params.get("name");
 
 let mapUrl = "https://nominatim.openstreetmap.org/search/";
 let cityAndState = ",Burlington,VT";
+
+let div = document.getElementById("div");
 
 if (params.has("name")){
 fetch(name + '.json')
@@ -29,28 +50,35 @@ fetch(name + '.json')
   
   let restaurantName = document.createElement('p');
   restaurantName.textContent = restaurantInfo.name;
-  document.body.appendChild(restaurantName);
+  div.appendChild(restaurantName);
   
   let restaurantAddress = document.createElement('p');
   restaurantAddress.textContent = "Address: " + restaurantInfo.address;
-  document.body.appendChild(restaurantAddress);
+  div.appendChild(restaurantAddress);
   
   let restaurantPhoneNumber = document.createElement('p');
   restaurantPhoneNumber.textContent = "Phone Number: " + restaurantInfo["phone number"];
-  document.body.appendChild(restaurantPhoneNumber);
+  div.appendChild(restaurantPhoneNumber);
 
   let restaurantHours = document.createElement('p');
   restaurantHours.textContent = "Hours: " + restaurantInfo.hours;
-  document.body.appendChild(restaurantHours);
+  div.appendChild(restaurantHours);
 
   let restaurantComments = document.createElement('p');
   restaurantComments.textContent = "Notes:";
-  document.body.appendChild(restaurantComments);
+  div.appendChild(restaurantComments);
   for (let i = 0; i < restaurantInfo.notes.length; i++) {
     let para = document.createElement('p');
-    para.textContent = restaurantInfo.notes[i];
-    document.body.appendChild(para);
+    para.innerHTML = marked(restaurantInfo.notes[i]);
+    div.appendChild(para);
   }
+
+  let home = document.createElement('p');
+  let homeLink = document.createElement('a');
+  homeLink.setAttribute('href', '/');
+  homeLink.textContent = "Back to restaurants list"
+  home.appendChild(homeLink);
+  div.appendChild(home);
 
   return restaurantInfo;
 })
@@ -62,40 +90,51 @@ fetch(name + '.json')
   let iframe = document.getElementById("theMap")
 
 
-fetch(urlApi + urlAddress + "Burlington,VT" + "&format=json")
-.then(function(response) {
-  return response.json();
+  fetch(urlApi + urlAddress + "Burlington,VT" + "&format=json")
+  .then(function(response) {
+    return response.json();
 
-})
-.then(function(restaurantMap){
-  // console.log(restaurantMap);
-  console.log(restaurantMap[0].boundingbox)
-  let iframe = document.getElementById("theMap")
-  let left = restaurantMap[0].boundingbox[0]
-  let bottom = restaurantMap[0].boundingbox[1]
-  let right = restaurantMap[0].boundingbox[2]
-  let top = restaurantMap[0].boundingbox[3]
-  iframe.setAttribute("src","https://www.openstreetmap.org/export/embed.html?bbox=" + right + "," + bottom + "," + top + "," + left + "&layer=mapnik")
+  })
+  .then(function(restaurantMap){
+    console.log(restaurantMap[0].boundingbox)
+    let iframe = document.getElementById("theMap")
+    let left = restaurantMap[0].boundingbox[0]
+    let bottom = restaurantMap[0].boundingbox[1]
+    let right = restaurantMap[0].boundingbox[2]
+    let top = restaurantMap[0].boundingbox[3]
+    iframe.setAttribute("src","https://www.openstreetmap.org/export/embed.html?bbox=" + right + "," + bottom + "," + top + "," + left + "&layer=mapnik")
 
+  });
 });
-});
-}
-else{
+  let mapdiv = document.getElementById("mapdiv")
+  mapdiv.style.display = "none";
+} else {
   let redP = document.createElement('p');
   let redOnion = document.createElement('a');
   redOnion.textContent = "Red Onion";
   redOnion.setAttribute("href","/?name=red-onion")
   redP.appendChild(redOnion);
-  document.body.appendChild(redP);
+  div.appendChild(redP);
 
   let mikeP = document.createElement('p');
   let mrMikes = document.createElement('a');
   mrMikes.textContent = "Mr. Mike's";
   mrMikes.setAttribute("href","/?name=mr-mikes")
   mikeP.appendChild(mrMikes);
-  document.body.appendChild(mikeP);
+  div.appendChild(mikeP);
 
+  let asianaP = document.createElement('p');
+  let asiana = document.createElement('a');
+  asiana.textContent = "Asiana Noodle House";
+  asiana.setAttribute("href","/?name=asiana-noodle-house")
+  asianaP.appendChild(asiana);
+  div.appendChild(asianaP);
+  
+  let iframe = document.getElementById("theMap");
+
+  iframe.setAttribute("src", "mapmarker.html")
 }
 
 </script>
 </body>
+</html>
