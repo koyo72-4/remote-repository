@@ -40,7 +40,9 @@ let cityAndState = ",Burlington,VT";
 
 let div = document.getElementById("div");
 
+
 if (params.has("name")){
+
 fetch(name + '.json')
 .then(function(response) {
   return response.json();
@@ -92,10 +94,12 @@ fetch(name + '.json')
 
   fetch(urlApi + urlAddress + "Burlington,VT" + "&format=json")
   .then(function(response) {
+    console.log(response.json)
     return response.json();
 
   })
   .then(function(restaurantMap){
+    console.log(restaurantMap)
     console.log(restaurantMap[0].boundingbox)
     let iframe = document.getElementById("theMap")
     let left = restaurantMap[0].boundingbox[0]
@@ -108,27 +112,30 @@ fetch(name + '.json')
 });
   let mapdiv = document.getElementById("mapdiv")
   mapdiv.style.display = "none";
+
 } else {
-  let redP = document.createElement('p');
-  let redOnion = document.createElement('a');
-  redOnion.textContent = "Red Onion";
-  redOnion.setAttribute("href","/?name=red-onion")
-  redP.appendChild(redOnion);
-  div.appendChild(redP);
 
-  let mikeP = document.createElement('p');
-  let mrMikes = document.createElement('a');
-  mrMikes.textContent = "Mr. Mike's";
-  mrMikes.setAttribute("href","/?name=mr-mikes")
-  mikeP.appendChild(mrMikes);
-  div.appendChild(mikeP);
+  let restaurantIdsArray = ["red-onion", "mr-mikes", "asiana-noodle-house", "august-first", "church-street-tavern", "city-market", "new-moon"];
 
-  let asianaP = document.createElement('p');
-  let asiana = document.createElement('a');
-  asiana.textContent = "Asiana Noodle House";
-  asiana.setAttribute("href","/?name=asiana-noodle-house")
-  asianaP.appendChild(asiana);
-  div.appendChild(asianaP);
+  for (let id of restaurantIdsArray) {
+    fetch(id + '.json')
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(restaurantInfo) {
+      console.log(restaurantInfo);
+      let restaurantParagraph = document.createElement('p');
+      let restaurantAnchor = document.createElement('a');
+      if (restaurantInfo.name.includes("🍜")) {
+        restaurantAnchor.textContent = restaurantInfo.name.substring(0, restaurantInfo.name.length - 2);
+      } else {
+        restaurantAnchor.textContent = restaurantInfo.name;
+      }
+      restaurantAnchor.setAttribute("href","/?name=" + id)
+      restaurantParagraph.appendChild(restaurantAnchor);
+      div.appendChild(restaurantParagraph);
+    })
+  }
   
   let iframe = document.getElementById("theMap");
 
