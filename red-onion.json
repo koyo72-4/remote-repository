@@ -1,0 +1,11 @@
+{
+"id": "red-onion",
+"name": "Red Onion",
+"address": "140 Church St.",
+"phone number": "865-2563",
+"hours": "9:00 am – 6:00 pm",
+"notes": [
+    "Nice _thick_ bread.", 
+    "Can make own ~~sansdkuches~~ sandwiches."
+    ]
+}
