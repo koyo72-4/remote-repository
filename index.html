@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+
   <style>
+   
     #theMap {
       float: left;
     }
@@ -75,12 +78,25 @@ fetch(name + '.json')
     div.appendChild(para);
   }
 
-  let home = document.createElement('p');
-  let homeLink = document.createElement('a');
-  homeLink.setAttribute('href', '/');
-  homeLink.textContent = "Back to restaurants list"
-  home.appendChild(homeLink);
-  div.appendChild(home);
+  // let home = document.createElement('p');
+  // let homeLink = document.createElement('a');
+  // homeLink.setAttribute('href', '/');
+  // homeLink.textContent = "Back to restaurants list"
+  // home.appendChild(homeLink);
+  // div.appendChild(home);
+
+  let homeButton = document.createElement('button');
+  homeButton.addEventListener("click", goHome)
+  homeButton.classList.add('btn');
+  homeButton.classList.add('btn-primary');
+  homeButton.classList.add('btn-block');
+  homeButton.textContent = 'Home';
+  div.appendChild(homeButton);
+
+  function goHome(){
+    window.location.href="/"
+  }
+
 
   return restaurantInfo;
 })
@@ -110,38 +126,66 @@ fetch(name + '.json')
 
   });
 });
-  let mapdiv = document.getElementById("mapdiv")
-  mapdiv.style.display = "none";
+  let mapdiv = document.getElementById("mapdiv");
 
 } else {
 
   let restaurantIdsArray = ["red-onion", "mr-mikes", "asiana-noodle-house", "august-first", "church-street-tavern", "city-market", "new-moon"];
 
+  // for (let id of restaurantIdsArray) {
+  //   fetch(id + '.json')
+  //   .then(function(response) {
+  //     return response.json();
+  //   })
+    // .then(function(restaurantInfo) {
+    //   console.log(restaurantInfo);
+    //   let restaurantParagraph = document.createElement('p');
+    //   let restaurantAnchor = document.createElement('a');
+    //   if (restaurantInfo.name.includes("🍜")) {
+    //     restaurantAnchor.textContent = restaurantInfo.name.substring(0, restaurantInfo.name.length - 2);
+    //   } else {
+    //     restaurantAnchor.textContent = restaurantInfo.name;
+    //   }
+    //   restaurantAnchor.setAttribute("href","/?name=" + id)
+    //   restaurantParagraph.appendChild(restaurantAnchor);
+    //   div.appendChild(restaurantParagraph);
+  //   })
+  // }
+
   for (let id of restaurantIdsArray) {
     fetch(id + '.json')
     .then(function(response) {
-      return response.json();
-    })
+      return response.json()})
     .then(function(restaurantInfo) {
       console.log(restaurantInfo);
-      let restaurantParagraph = document.createElement('p');
-      let restaurantAnchor = document.createElement('a');
+      let restaurantButton = document.createElement('button');
       if (restaurantInfo.name.includes("🍜")) {
-        restaurantAnchor.textContent = restaurantInfo.name.substring(0, restaurantInfo.name.length - 2);
+        restaurantButton.textContent = restaurantInfo.name.substring(0, restaurantInfo.name.length - 2);
       } else {
-        restaurantAnchor.textContent = restaurantInfo.name;
+        restaurantButton.textContent = restaurantInfo.name;
       }
-      restaurantAnchor.setAttribute("href","/?name=" + id)
-      restaurantParagraph.appendChild(restaurantAnchor);
-      div.appendChild(restaurantParagraph);
-    })
+      restaurantButton.classList.add('btn');
+      restaurantButton.classList.add('btn-primary');
+      restaurantButton.classList.add('btn-block');
+      restaurantButton.addEventListener("click", goOut)
+      div.appendChild(restaurantButton);
+
+      function goOut() {
+        window.location.href="/?name=" + restaurantInfo.id
+
+      }
+    });
   }
-  
+
   let iframe = document.getElementById("theMap");
 
-  iframe.setAttribute("src", "mapmarker.html")
+  iframe.setAttribute("src", "mapmarker.html");
+      // })}
 }
 
 </script>
+ <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+ <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
 </body>
 </html>
