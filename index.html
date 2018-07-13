@@ -13,17 +13,19 @@
     #div {
       float: left;
       width: 40%;
-      margin-left: 40px;
+      margin-left: 25px;
       margin-top: 40px;
       margin-right: 40px;
+      display: flex;
       flex-direction: column;
-      align-content: center;
+      align-items: center;
       font-size: 20px;
     }
-    #thing {
+    #div h2,
+    .page-heading {
       text-align: center;
       font-family: 'Kaushan Script', cursive;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
       color: darkblue;
     }
     #title{
@@ -54,7 +56,11 @@
     button{
       background: #75B4E2 !important;
       width: 200px !important;
-      margin-left: 150px;
+      /* margin-left: 150px; */
+      transition: background-color 0.8s !important;
+    }
+    button:hover {
+      background-color: darkblue !important;
     }
    
   </style>
@@ -68,9 +74,7 @@
   height="400">
 </iframe>
 <div id="div">
-  <div id="thing">
   <h2>Burlington Restaurants</h2>
-  </div>
 </div>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><hr>
 
@@ -91,9 +95,15 @@ let mapUrl = "https://nominatim.openstreetmap.org/search/";
 let cityAndState = ",Burlington,VT";
 
 let div = document.getElementById("div");
+let h2 = document.querySelector("#div h2");
 
 
 if (params.has("name")){
+
+  document.querySelector("hr").remove();
+  h2.remove();
+  div.style.alignItems = "flex-start";
+  div.style.marginLeft = "70px";
 
 fetch(name + '.json')
 .then(function(response) {
@@ -104,6 +114,8 @@ fetch(name + '.json')
   
   let restaurantName = document.createElement('p');
   restaurantName.textContent = restaurantInfo.name;
+  restaurantName.classList.add("page-heading");
+  restaurantName.style.fontSize = "2rem";
   div.appendChild(restaurantName);
   
   let restaurantAddress = document.createElement('p');
@@ -119,7 +131,9 @@ fetch(name + '.json')
   div.appendChild(restaurantHours);
 
   let restaurantComments = document.createElement('p');
-  restaurantComments.textContent = "Notes:";
+  let restaurantCommentsItalic = document.createElement('em');
+  restaurantCommentsItalic.textContent = "Notes:";
+  restaurantComments.appendChild(restaurantCommentsItalic);
   div.appendChild(restaurantComments);
   for (let i = 0; i < restaurantInfo.notes.length; i++) {
     let para = document.createElement('p');
@@ -140,12 +154,12 @@ fetch(name + '.json')
   homeButton.classList.add('btn-primary');
   homeButton.classList.add('btn-block');
   homeButton.textContent = 'Home';
+  homeButton.style.marginBottom = "25px";
   div.appendChild(homeButton);
 
   function goHome(){
     window.location.href="/"
   }
-
 
   return restaurantInfo;
 })
